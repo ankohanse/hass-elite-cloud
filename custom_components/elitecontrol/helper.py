@@ -1,0 +1,73 @@
+import logging
+
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import Platform
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+import homeassistant.helpers.entity_registry as entity_registry
+
+from .const import (
+    PLATFORMS,
+    BINARY_SENSOR_VALUES_ALL,
+)
+from .coordinator import (
+    EliteControlCoordinatorFactory,
+    EliteControlCoordinator
+)
+from .data import (
+    EliteControlDatapoint,
+    EliteControlDeviceResource,
+)
+
+
+_LOGGER = logging.getLogger(__name__)
+
+
+class EliteControlEntityHelper:
+    """My custom helper to provide common functions."""
+
+    def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry):
+        """
+        Get entity helper for a config entry.
+        The helper is short lived (only during init) and does not contain state data,
+        therefore no need to create and cache it in hass.data via a Factory class.
+        """
+        self._coordinator = EliteControlCoordinatorFactory.create(hass, config_entry)
+        self._entity_registry = entity_registry.async_get(hass)
+
+
+    async def async_setup_entry(self, target_platform: Platform, target_class: type, async_add_entities: AddEntitiesCallback):
+        """
+        Setting up the adding and updating of sensor and binary_sensor entities
+        """
+        # Iterate all devices and platform datapoints to create sensor entities
+        entities = []
+        valid_unique_ids: list[str] = []
+
+        for device in self._coordinator.devices.values():
+            for datapoint in EliteControlDatapoint.for_platform(target_platform):
+
+                resource: EliteControlDeviceResource = next( (r for r in device.resources if r.key==datapoint.key), None )
+                if resource is None or resource.is_hidden:
+                    continue
+
+                # Create a Sensor, Binary_Sensor, Number, Select, Switch or other entity for this datapoint
+                try:
+                    entity = target_class(self._coordinator, device, resource, datapoint)
+                    entities.append(entity)
+
+                    valid_unique_ids.append(entity.unique_id)
+
+                except Exception as  ex:
+                    _LOGGER.warning(f"Could not instantiate {target_platform} entity class for {device.uuid}:{datapoint.key}. Details: {ex}")
+
+        # Remember valid unique_ids per platform so we can do an entity cleanup later
+        self._coordinator.set_valid_unique_ids(target_platform, valid_unique_ids)
+
+        # Now add the entities to the entity_registry
+        _LOGGER.info(f"Add {len(entities)} {target_platform} entities for account '{self._coordinator.username}'")
+        if entities:
+            async_add_entities(entities)
+
+

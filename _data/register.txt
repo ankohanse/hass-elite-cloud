@@ -1,0 +1,39 @@
+
+In the elitecloud app, register, signup to a plan and connect to your site
+
+To add a HA account:
+go to elitecloud.co.nz and choose 'sign up' to create a dedicated HA account
+Fill in form and press ok.
+
+In confirmation email click on button. Sometimes an empty page will open, but registration will still be confirmed
+
+DO NOT ADD A PLAN OR A SITE !!!!
+DO NOT ADD TWO FACTOR AUTHENTICATION !!!
+
+
+
+Back in the app, logged in as the original user, select users -> add
+enter HA account email address and press 'invite user'
+
+Expected an email, but doesn't appear....
+
+
+
+
+
+
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+go to elitecloud.co.nz end press 'login'
+Enter username+password and press ok
+
+
+Not needed?
+Connect your site to your account
+From menu select 'Plan'.
+Choose a plan and press 'Subscribe to app plan'. Only one displayed, it will allow up to 5 users
+Enter payment details and press 'subscribe'
+(first 30 days are free)
+
+

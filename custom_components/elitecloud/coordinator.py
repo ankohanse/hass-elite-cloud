@@ -35,19 +35,19 @@ from .const import (
     utcmax,
 )
 from .api import (
-    EliteControlApiFactory,
-    EliteControlApiWrap,
+    EliteCloudApiFactory,
+    EliteCloudApiWrap,
 )
 from .data import (
-    EliteControlDeviceConfig,
-    EliteControlDeviceStatus,
+    EliteCloudDeviceConfig,
+    EliteCloudDeviceStatus,
 )
 
 
 # Define logger
 _LOGGER = logging.getLogger(__name__)
 
-class EliteControlCoordinatorFactory:
+class EliteCloudCoordinatorFactory:
     """Factory to help create the Coordinator"""
 
     @staticmethod
@@ -90,12 +90,12 @@ class EliteControlCoordinatorFactory:
         if not coordinator:
             _LOGGER.debug(f"Create coordinator for account '{username}'")
 
-            # Get an instance of the EliteControlApi for these credentials
+            # Get an instance of the EliteCloudApi for these credentials
             # This instance may be shared with other coordinators that use the same credentials
-            api = EliteControlApiFactory.create(hass, username, password)
+            api = EliteCloudApiFactory.create(hass, username, password)
         
             # Get an instance of our coordinator. This is unique to this account
-            coordinator = EliteControlCoordinator(hass, config_entry, api, configs, options)
+            coordinator = EliteCloudCoordinator(hass, config_entry, api, configs, options)
 
             # Apply reload settings if needed
             coordinator.reload_count = reload_count
@@ -122,29 +122,29 @@ class EliteControlCoordinatorFactory:
         }
         options = {}
         
-        # Get a temporary instance of the EliteControlApiWrap for these credentials
-        api = EliteControlApiFactory.create_temp(hass, username, password)
+        # Get a temporary instance of the EliteCloudApiWrap for these credentials
+        api = EliteCloudApiFactory.create_temp(hass, username, password)
         
         # Get an instance of our coordinator. This is unique to this account
         _LOGGER.debug(f"create temp coordinator for account '{username}'")
-        coordinator = EliteControlCoordinator(hass, None, api, configs, options)
+        coordinator = EliteCloudCoordinator(hass, None, api, configs, options)
         return coordinator
     
 
     @staticmethod
-    async def async_close_temp(coordinator: 'EliteControlCoordinator'):
+    async def async_close_temp(coordinator: 'EliteCloudCoordinator'):
         """
         Close a previously created coordinator
         """
 
         _LOGGER.debug("close temp coordinator")
-        await EliteControlApiFactory.async_close_temp(coordinator._api)
+        await EliteCloudApiFactory.async_close_temp(coordinator._api)
     
 
-class EliteControlCoordinator(DataUpdateCoordinator[dict[str,EliteControlDeviceStatus]]):
+class EliteCloudCoordinator(DataUpdateCoordinator[dict[str,EliteCloudDeviceStatus]]):
     """My custom coordinator."""
 
-    def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry, api: EliteControlApiWrap, configs: dict[str,Any], options: dict[str,Any]):
+    def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry, api: EliteCloudApiWrap, configs: dict[str,Any], options: dict[str,Any]):
         """
         Initialize my coordinator.
         """
@@ -160,7 +160,7 @@ class EliteControlCoordinator(DataUpdateCoordinator[dict[str,EliteControlDeviceS
         )
 
         self._config_entry: ConfigEntry = config_entry
-        self._api: EliteControlApiWrap = api
+        self._api: EliteCloudApiWrap = api
         self._configs: dict[str,Any] = configs
         self._options: dict[str,Any] = options
 
@@ -168,7 +168,7 @@ class EliteControlCoordinator(DataUpdateCoordinator[dict[str,EliteControlDeviceS
 
         # Initialize devices from config_entry so we can subscribe for updates before we've polled for devices
         device_dicts = options.get(CONF_DEVICES, [])
-        device_configs = [ EliteControlDeviceConfig.from_dict(d) for d in device_dicts ]
+        device_configs = [ EliteCloudDeviceConfig.from_dict(d) for d in device_dicts ]
 
         self._api.set_initial_devices(device_configs)   
 
@@ -199,11 +199,11 @@ class EliteControlCoordinator(DataUpdateCoordinator[dict[str,EliteControlDeviceS
         return self._username
 
     @property
-    def devices(self) -> dict[str,EliteControlDeviceConfig]:
+    def devices(self) -> dict[str,EliteCloudDeviceConfig]:
         return self._api.devices
 
     @property
-    def status(self) -> dict[str,EliteControlDeviceStatus]:
+    def status(self) -> dict[str,EliteCloudDeviceStatus]:
         return self._api.status
 
     @property
@@ -217,7 +217,7 @@ class EliteControlCoordinator(DataUpdateCoordinator[dict[str,EliteControlDeviceS
         self._reload_delay = min( pow(2,count-1)*COORDINATOR_RELOAD_DELAY, COORDINATOR_RELOAD_DELAY_MAX )
 
 
-    def _get_data(self) -> dict[str,EliteControlDeviceStatus]:
+    def _get_data(self) -> dict[str,EliteCloudDeviceStatus]:
         """The data to return on requests from Entities"""
         return self._api.status
 
@@ -291,7 +291,7 @@ class EliteControlCoordinator(DataUpdateCoordinator[dict[str,EliteControlDeviceS
                 er.async_remove(entity.entity_id)
 
 
-    async def async_config_flow_data(self) -> dict[str, EliteControlDeviceConfig]:
+    async def async_config_flow_data(self) -> dict[str, EliteCloudDeviceConfig]:
         """
         Fetch devices and their resources from API.
 

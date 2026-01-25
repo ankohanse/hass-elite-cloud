@@ -1,4 +1,4 @@
-"""Constants for the Elite Control integration."""
+"""Constants for the Elite Cloud integration."""
 from datetime import datetime, timezone
 import logging
 
@@ -13,9 +13,9 @@ _LOGGER: logging.Logger = logging.getLogger(__package__)
 
 
 # Base component constants
-DOMAIN = "elitecontrol"
-NAME = "Elite Control"
-ISSUE_URL = "https://github.com/ankohanse/hass-elite-control/issues"
+DOMAIN = "elitecloud"
+NAME = "Elite Cloud"
+ISSUE_URL = "https://github.com/ankohanse/hass-elite-cloud/issues"
 
 # Map platform to pf codes for both enabled and disabled entities
 PLATFORM_TO_PF: dict[Platform, str] = {
@@ -37,8 +37,8 @@ DIAGNOSTICS_REDACT = { CONF_PASSWORD, 'client_secret' }
 
 # To compose entity unique id and names
 MANUFACTURER = "Arrowhead Alarm Products"
-PREFIX_ID = "elitecontrol"
-PREFIX_NAME = "Elite Control"
+PREFIX_ID = "elitecloud"
+PREFIX_NAME = "Elite Cloud"
 
 # Extra attributes displayed in entity attributes
 ATTR_DATA_VALUE = "elitecontrol_value"

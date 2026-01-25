@@ -12,19 +12,19 @@ from .const import (
     BINARY_SENSOR_VALUES_ALL,
 )
 from .coordinator import (
-    EliteControlCoordinatorFactory,
-    EliteControlCoordinator
+    EliteCloudCoordinatorFactory,
+    EliteCloudCoordinator
 )
 from .data import (
-    EliteControlDatapoint,
-    EliteControlDeviceResource,
+    EliteCloudDatapoint,
+    EliteCloudDeviceResource,
 )
 
 
 _LOGGER = logging.getLogger(__name__)
 
 
-class EliteControlEntityHelper:
+class EliteCloudEntityHelper:
     """My custom helper to provide common functions."""
 
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry):
@@ -33,7 +33,7 @@ class EliteControlEntityHelper:
         The helper is short lived (only during init) and does not contain state data,
         therefore no need to create and cache it in hass.data via a Factory class.
         """
-        self._coordinator = EliteControlCoordinatorFactory.create(hass, config_entry)
+        self._coordinator = EliteCloudCoordinatorFactory.create(hass, config_entry)
         self._entity_registry = entity_registry.async_get(hass)
 
 
@@ -46,9 +46,9 @@ class EliteControlEntityHelper:
         valid_unique_ids: list[str] = []
 
         for device in self._coordinator.devices.values():
-            for datapoint in EliteControlDatapoint.for_platform(target_platform):
+            for datapoint in EliteCloudDatapoint.for_platform(target_platform):
 
-                resource: EliteControlDeviceResource = next( (r for r in device.resources if r.key==datapoint.key), None )
+                resource: EliteCloudDeviceResource = next( (r for r in device.resources if r.key==datapoint.key), None )
                 if resource is None or resource.is_hidden:
                     continue
 

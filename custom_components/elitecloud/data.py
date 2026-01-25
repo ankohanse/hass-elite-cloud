@@ -92,10 +92,10 @@ DATAPATHS_CONST = {
     '=system':      { 'name': 'system', 'icon_name': '', 'is_hidden': False, 'is_active': True},
 }
 
-class EliteControlDatapoint(DP):
+class EliteCloudDatapoint(DP):
     def __init__(self, dp: DP):
         """
-        Create a new EliteControlDatapoint instance
+        Create a new EliteCloudDatapoint instance
         """
         super().__init__(**asdict(dp))
 
@@ -113,7 +113,7 @@ class EliteControlDatapoint(DP):
 
 
     @staticmethod
-    def for_platform(target_platform: str) -> list['EliteControlDatapoint']:
+    def for_platform(target_platform: str) -> list['EliteCloudDatapoint']:
         """
         Get all datapoints matching the target platform
         """
@@ -123,16 +123,16 @@ class EliteControlDatapoint(DP):
             return []
 
         # Collect all datapoints associated with this device family and for this platform 
-        return [ EliteControlDatapoint(dp) for dp in DATAPOINTS if dp.pf==pf  ]
+        return [ EliteCloudDatapoint(dp) for dp in DATAPOINTS if dp.pf==pf  ]
 
 
     @staticmethod
-    def for_all() -> list['EliteControlDatapoint']:
-        return [ EliteControlDatapoint(dp) for dp in DATAPOINTS ]
+    def for_all() -> list['EliteCloudDatapoint']:
+        return [ EliteCloudDatapoint(dp) for dp in DATAPOINTS ]
     
 
 @dataclass
-class EliteControlDeviceConfig():
+class EliteCloudDeviceConfig():
 
     uuid: str
     name: str
@@ -140,42 +140,42 @@ class EliteControlDeviceConfig():
     mac: str
     type: str
     version: str
-    resources: 'list[EliteControlDeviceResource]'
+    resources: 'list[EliteCloudDeviceResource]'
 
 
     @staticmethod
     def from_data(d: dict[str,Any]):
         """
         """
-        return EliteControlDeviceConfig(
+        return EliteCloudDeviceConfig(
             uuid       = d.get("uuid", None),
             name       = d.get("name", None),
             serial     = d.get("panel", {}).get("serial_no", None),
             mac        = d.get("panel", {}).get("mac_address", None),
             type       = d.get("panel", {}).get("specification", {}).get("module_type", None),
             version    = d.get("panel", {}).get("specification", {}).get("module_version", None),
-            resources  = EliteControlDeviceResource.from_data(d.get("resources", {}))
+            resources  = EliteCloudDeviceResource.from_data(d.get("resources", {}))
         )
     
 
     @staticmethod
-    def from_dict(d: dict[str,Any]) -> 'EliteControlDeviceConfig':        
+    def from_dict(d: dict[str,Any]) -> 'EliteCloudDeviceConfig':        
         """
-        Construct a new EliteControlDeviceConfig object from a dict
+        Construct a new EliteCloudDeviceConfig object from a dict
         """
-        return EliteControlDeviceConfig(
+        return EliteCloudDeviceConfig(
             uuid       = d.get("uuid", None),
             name       = d.get("name", None),
             serial     = d.get("serial", None),
             mac        = d.get("mac", None),
             type       = d.get("type", None),
             version    = d.get("version", None),
-            resources  = EliteControlDeviceResource.from_list(d.get("resources", {})),
+            resources  = EliteCloudDeviceResource.from_list(d.get("resources", {})),
         )
 
 
 @dataclass
-class EliteControlDeviceResource():
+class EliteCloudDeviceResource():
 
     key: str
     name: str
@@ -185,13 +185,13 @@ class EliteControlDeviceResource():
 
         
     @staticmethod
-    def from_data(d: dict[str,Any]) -> 'list[EliteControlDeviceResource]':
+    def from_data(d: dict[str,Any]) -> 'list[EliteCloudDeviceResource]':
         """
         get struct that defines properties for this datapoint
         """
-        result: list[EliteControlDeviceResource] = []
+        result: list[EliteCloudDeviceResource] = []
         
-        for datapoint in EliteControlDatapoint.for_all():
+        for datapoint in EliteCloudDatapoint.for_all():
             try:
                 if datapoint.rpath.startswith('='):
                     # Predefined constant result
@@ -203,7 +203,7 @@ class EliteControlDeviceResource():
                 if not isinstance(r, dict):
                     continue
 
-                res = EliteControlDeviceResource(
+                res = EliteCloudDeviceResource(
                     key = datapoint.key,
                     name = r.get("name"),
                     icon = r.get("icon_name"),
@@ -219,12 +219,12 @@ class EliteControlDeviceResource():
 
 
     @staticmethod
-    def from_list(l: list[Any]) -> 'list[EliteControlDeviceResource]':
+    def from_list(l: list[Any]) -> 'list[EliteCloudDeviceResource]':
         """
         """
-        result: list[EliteControlDeviceResource] = []
+        result: list[EliteCloudDeviceResource] = []
         for r in l:
-            res = EliteControlDeviceResource(
+            res = EliteCloudDeviceResource(
                 key = r.get('key'),
                 name = r.get("name"),
                 icon = r.get('icon'),
@@ -237,7 +237,7 @@ class EliteControlDeviceResource():
 
 
 @dataclass
-class EliteControlDeviceStatus():
+class EliteCloudDeviceStatus():
 
     uuid: str
     _statuses: dict[str,str]
@@ -247,13 +247,13 @@ class EliteControlDeviceStatus():
 
 
     @staticmethod
-    def from_data(uuid:str, d: dict[str,Any]) -> 'EliteControlDeviceStatus':
+    def from_data(uuid:str, d: dict[str,Any]) -> 'EliteCloudDeviceStatus':
         """
         get struct that defines properties for this datapoint
         """
         statuses: dict[str,str] = {}
         
-        for datapoint in EliteControlDatapoint.for_all():
+        for datapoint in EliteCloudDatapoint.for_all():
             try:
                 if datapoint.spath.startswith('='):
                     # Predefined constant result
@@ -273,7 +273,7 @@ class EliteControlDeviceStatus():
             except Exception as ex:
                 _LOGGER.debug(f"Could not resolve path {datapoint.spath} for {datapoint.key}: {str(ex)}")
 
-        return EliteControlDeviceStatus(
+        return EliteCloudDeviceStatus(
             uuid = uuid,
             _statuses = statuses
         )

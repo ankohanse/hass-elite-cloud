@@ -20,8 +20,8 @@ from .const import (
     DIAGNOSTICS_REDACT,
 )
 from .coordinator import (
-    EliteControlCoordinatorFactory,
-    EliteControlCoordinator,
+    EliteCloudCoordinatorFactory,
+    EliteCloudCoordinator,
 )
 
 
@@ -34,7 +34,7 @@ async def async_get_config_entry_diagnostics(hass: HomeAssistant, config_entry: 
     username = config_entry.data.get(CONF_USERNAME)
     _LOGGER.info(f"Retrieve diagnostics for account '{username}'")
     
-    coordinator: EliteControlCoordinator = EliteControlCoordinatorFactory.create(hass, config_entry)
+    coordinator: EliteCloudCoordinator = EliteCloudCoordinatorFactory.create(hass, config_entry)
     diagnostics = {
         "config": {
             "data": config_entry.data,
@@ -52,7 +52,7 @@ async def async_get_config_entry_diagnostics(hass: HomeAssistant, config_entry: 
 
 
 # For some specific dataclasses we exclude None values
-DATACLASSES_EXCLUDE_NONE = ('EliteControlHistoryItem', 'EliteControlHistoryDetail')
+DATACLASSES_EXCLUDE_NONE = ('EliteCloudHistoryItem', 'EliteCloudHistoryDetail')
 
 
 def to_dict(obj: Any, dict_factory=dict) -> Any:
@@ -70,7 +70,7 @@ def to_dict(obj: Any, dict_factory=dict) -> Any:
                 # Not using dataclass.asdict() method, because it does not recurse in to the dataclass field values
                 # and convert the values themselves to dicts (using dict_factory).
 
-                df = dict_factory       # if not isinstance(obj, DATACLASSES_EXCLUDE_NONE) else EliteControlDictFactory.exclude_none_values
+                df = dict_factory       # if not isinstance(obj, DATACLASSES_EXCLUDE_NONE) else EliteCloudDictFactory.exclude_none_values
 
                 result = []
                 for f in fields(obj):

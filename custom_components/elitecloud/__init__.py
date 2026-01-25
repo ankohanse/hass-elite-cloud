@@ -21,8 +21,8 @@ from homeassistant.const import (
     CONF_USERNAME,
 )
 from .coordinator import (
-    EliteControlCoordinatorFactory,
-    EliteControlCoordinator
+    EliteCloudCoordinatorFactory,
+    EliteCloudCoordinator
 )
 
 from .const import (
@@ -48,7 +48,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
-    """Set up EliteControl from a config entry."""
+    """Set up EliteCloud from a config entry."""
     
     # Assign the HA configured log level of this module to the pyelitecloud module
     log_level: int = _LOGGER.getEffectiveLevel()
@@ -62,9 +62,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
 
     _LOGGER.info(f"Setup config entry for account '{username}'")
     
-    # Get an instance of the EliteControlCoordinator for this profile
+    # Get an instance of the EliteCloudCoordinator for this profile
     # We force to create a fresh instance, otherwise data updates don't happen if this setup_entry was triggered by a reload
-    coordinator: EliteControlCoordinator = EliteControlCoordinatorFactory.create(hass, config_entry, force_create=True)
+    coordinator: EliteCloudCoordinator = EliteCloudCoordinatorFactory.create(hass, config_entry, force_create=True)
     
     # No need to fetch initial data; 
     # we already have what we need from config_entry plus 

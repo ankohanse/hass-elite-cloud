@@ -1,4 +1,4 @@
-"""config_flow.py: Config flow for Elite Control integration."""
+"""config_flow.py: Config flow for Elite Cloud integration."""
 from __future__ import annotations
 
 from dataclasses import asdict
@@ -36,17 +36,17 @@ from .const import (
 )
 
 from .coordinator import (
-    EliteControlCoordinatorFactory,
-    EliteControlCoordinator,
+    EliteCloudCoordinatorFactory,
+    EliteCloudCoordinator,
 )
 from .data import (
-    EliteControlDeviceConfig,
+    EliteCloudDeviceConfig,
 )
 
 _LOGGER = logging.getLogger(__name__)
 
 
-@config_entries.HANDLERS.register("elitecontrol")
+@config_entries.HANDLERS.register("elitecloud")
 class ConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow."""
     
@@ -58,7 +58,7 @@ class ConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         self._password:str = None
         self._errors = {}
 
-        self._device_map: dict[str,EliteControlDeviceConfig] = None
+        self._device_map: dict[str,EliteCloudDeviceConfig] = None
 
         # Assign the HA configured log level of this module to the pyelitecloud module
         log_level: int = _LOGGER.getEffectiveLevel()
@@ -73,7 +73,7 @@ class ConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         _LOGGER.info("Trying connection...")
         
         self._errors = {}
-        coordinator = EliteControlCoordinatorFactory.create_temp(self._username, self._password)
+        coordinator = EliteCloudCoordinatorFactory.create_temp(self._username, self._password)
         try:
             # Call the EliteCloudApi with the detect_device method
             self._device_map = await coordinator.async_config_flow_data()
@@ -97,7 +97,7 @@ class ConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             self._errors[CONF_PASSWORD] = f"Unknown error: {e}"
 
         finally:
-            await EliteControlCoordinatorFactory.async_close_temp(coordinator)
+            await EliteCloudCoordinatorFactory.async_close_temp(coordinator)
         
         return False
     

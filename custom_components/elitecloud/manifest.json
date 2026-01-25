@@ -1,0 +1,16 @@
+{
+  "domain": "elitecloud",
+  "name": "Elite Cloud",
+  "codeowners": [ "@ankohanse" ],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/ankohanse/hass-elite-cloud",
+  "integration_type": "hub",
+  "iot_class": "cloud_push",
+  "issue_tracker": "https://github.com/ankohanse/hass-elite-cloud/issues",
+  "loggers": ["custom_components.elitecloud"],
+  "requirements": [
+    "pyelitecloud==0.1.3"
+  ],
+  "version": "2026.01.1"
+}

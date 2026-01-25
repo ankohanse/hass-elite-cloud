@@ -1,4 +1,4 @@
-"""api.py: API for Elite Control integration."""
+"""api.py: API for Elite Cloud integration."""
 
 import asyncio
 from collections import defaultdict
@@ -6,7 +6,7 @@ from dataclasses import asdict
 from datetime import datetime, timedelta
 from enum import Enum
 from typing import Any, Final
-from custom_components.elitecontrol.data import EliteControlDeviceConfig
+from custom_components.elitecloud.data import EliteCloudDeviceConfig
 import httpx
 import logging
 
@@ -33,19 +33,19 @@ from .const import (
     utcmin,
 )
 from .data import (
-    EliteControlDeviceConfig,
-    EliteControlDeviceStatus,
+    EliteCloudDeviceConfig,
+    EliteCloudDeviceStatus,
 )
 
 # Define logger
 _LOGGER = logging.getLogger(__name__)
 
-class EliteControlApiFactory:
+class EliteCloudApiFactory:
     
     @staticmethod
-    def create(hass: HomeAssistant, username: str, password: str) -> 'EliteControlApiWrap':
+    def create(hass: HomeAssistant, username: str, password: str) -> 'EliteCloudApiWrap':
         """
-        Get a stored instance of the EliteControlApi for given credentials
+        Get a stored instance of the EliteCloudApi for given credentials
         """
     
         key = f"{username.lower()}_{hash(password) % 10**8}"
@@ -56,14 +56,14 @@ class EliteControlApiFactory:
         if not API in hass.data[DOMAIN]:
             hass.data[DOMAIN][API] = {}
             
-        # if a EliteControlApiWrap instance for these credentials is already available then re-use it
+        # if a EliteCloudApiWrap instance for these credentials is already available then re-use it
         api = hass.data[DOMAIN][API].get(key, None)
 
         if not api or api.closed:
             _LOGGER.debug(f"create Api for account '{username}'")
             
-            # Create a new EliteControlApiWrap instance and remember it
-            api = EliteControlApiWrap(hass, username, password)
+            # Create a new EliteCloudApiWrap instance and remember it
+            api = EliteCloudApiWrap(hass, username, password)
             hass.data[DOMAIN][API][key] = api
         else:
             _LOGGER.debug(f"reuse Api for account '{username}'")
@@ -72,9 +72,9 @@ class EliteControlApiFactory:
     
 
     @staticmethod
-    def create_temp(hass: HomeAssistant, username: str, password: str) -> 'EliteControlApiWrap':
+    def create_temp(hass: HomeAssistant, username: str, password: str) -> 'EliteCloudApiWrap':
         """
-        Get a temporary instance of the EliteControlApi for given credentials
+        Get a temporary instance of the EliteCloudApi for given credentials
         """
 
         key = f"{username.lower()}_{hash(password) % 10**8}"
@@ -85,22 +85,22 @@ class EliteControlApiFactory:
         if not API in hass.data[DOMAIN]:
             hass.data[DOMAIN][API] = {}
             
-        # if a EliteControlApiWrap instance for these credentials is already available then re-use it
+        # if a EliteCloudApiWrap instance for these credentials is already available then re-use it
         api = hass.data[DOMAIN][API].get(key, None)
         
         if not api or api.closed:
             _LOGGER.debug(f"create temp Api")
 
-            # Create a new EliteControlApiWrap instance
-            api = EliteControlApiWrap(hass, username, password, is_temp=True)
+            # Create a new EliteCloudApiWrap instance
+            api = EliteCloudApiWrap(hass, username, password, is_temp=True)
     
         return api    
 
 
     @staticmethod
-    async def async_close_temp(api: 'EliteControlApiWrap'):
+    async def async_close_temp(api: 'EliteCloudApiWrap'):
         """
-        Close a previously created EliteControlApi
+        Close a previously created EliteCloudApi
         """
         try:
             if api.is_temp and not api.closed:
@@ -111,7 +111,7 @@ class EliteControlApiFactory:
             _LOGGER.debug("Exception while closing temp Api: {ex}")
 
 
-class EliteControlApiWrap(AsyncEliteCloudApi):
+class EliteCloudApiWrap(AsyncEliteCloudApi):
     """Wrapper around AsyncEliteCloudApi class"""
 
     def __init__(self, hass: HomeAssistant, username: str, password: str, is_temp: bool = False):
@@ -134,8 +134,8 @@ class EliteControlApiWrap(AsyncEliteCloudApi):
 
         # Data properties
         self.devices_changed: bool = False
-        self.devices: dict[str,EliteControlDeviceConfig] = {}
-        self.status: dict[str, EliteControlDeviceStatus] = {}
+        self.devices: dict[str,EliteCloudDeviceConfig] = {}
+        self.status: dict[str, EliteCloudDeviceStatus] = {}
 
         # Coordinator listener to report back any changes in the data
         self._async_data_listener = None
@@ -144,7 +144,7 @@ class EliteControlApiWrap(AsyncEliteCloudApi):
         self._diag_values = defaultdict(set)
 
 
-    def set_initial_devices(self, device_configs: list[EliteControlDeviceConfig]):
+    def set_initial_devices(self, device_configs: list[EliteCloudDeviceConfig]):
         """
         Set initial devices from config_entry so we can subscribe to updates before we've done a poll
         """
@@ -205,7 +205,7 @@ class EliteControlApiWrap(AsyncEliteCloudApi):
 
             # Parse the data
             site["resources"] = site_resources
-            device = EliteControlDeviceConfig.from_data(site)
+            device = EliteCloudDeviceConfig.from_data(site)
 
             # Check for changes. Note that we only trigger on new or changed device, not on removed device
             old_device = self.devices.get(device.uuid)
@@ -240,7 +240,7 @@ class EliteControlApiWrap(AsyncEliteCloudApi):
             if verbose:
                 _LOGGER.debug(f"found status for site {site_uuid}: {site_status}")
 
-            device_status = EliteControlDeviceStatus.from_data(site_uuid, site_status)
+            device_status = EliteCloudDeviceStatus.from_data(site_uuid, site_status)
             self.status[device_status.uuid] = device_status
             new_status_ids.add(device_status.uuid)
 
@@ -277,7 +277,7 @@ class EliteControlApiWrap(AsyncEliteCloudApi):
             # Actual changed data is already stored in super()._sites_status[site.uuid]
             site_status = self._sites_status.get(site.uuid)
 
-            device_status = EliteControlDeviceStatus.from_data(site.uuid, site_status)
+            device_status = EliteCloudDeviceStatus.from_data(site.uuid, site_status)
             self.status[device_status.uuid] = device_status
             
             # Keep track of status values seen
@@ -291,7 +291,7 @@ class EliteControlApiWrap(AsyncEliteCloudApi):
             _LOGGER.info(f"{e}")
 
 
-    async def _async_update_diagnostics(self, device_status:EliteControlDeviceStatus=None):
+    async def _async_update_diagnostics(self, device_status:EliteCloudDeviceStatus=None):
         """
         Update diagnostics
         """

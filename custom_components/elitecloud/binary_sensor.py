@@ -42,19 +42,19 @@ from .const import (
     utcnow,
 )
 from .coordinator import (
-    EliteControlCoordinator,
+    EliteCloudCoordinator,
 )
 from .data import (
-    EliteControlDatapoint,
-    EliteControlDeviceConfig,
-    EliteControlDeviceResource,
-    EliteControlDeviceStatus,
+    EliteCloudDatapoint,
+    EliteCloudDeviceConfig,
+    EliteCloudDeviceResource,
+    EliteCloudDeviceStatus,
 )
 from .entity import (
-    EliteControlEntity,
+    EliteCloudEntity,
 )
 from .helper import (
-    EliteControlEntityHelper,
+    EliteCloudEntityHelper,
 )
 
 
@@ -72,20 +72,20 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
     """
     Setting up the adding and updating of binary_sensor entities
     """
-    await EliteControlEntityHelper(hass, config_entry).async_setup_entry(Platform.BINARY_SENSOR, EliteControlBinarySensor, async_add_entities)
+    await EliteCloudEntityHelper(hass, config_entry).async_setup_entry(Platform.BINARY_SENSOR, EliteCloudBinarySensor, async_add_entities)
 
 
-class EliteControlBinarySensor(CoordinatorEntity, BinarySensorEntity, EliteControlEntity):
+class EliteCloudBinarySensor(CoordinatorEntity, BinarySensorEntity, EliteCloudEntity):
     """
     Representation of an entity that is part of a gateway, tank or pump.
     """
 
-    def __init__(self, coordinator: EliteControlCoordinator, device: EliteControlDeviceConfig, resource: EliteControlDeviceResource, datapoint: EliteControlDatapoint) -> None:
+    def __init__(self, coordinator: EliteCloudCoordinator, device: EliteCloudDeviceConfig, resource: EliteCloudDeviceResource, datapoint: EliteCloudDatapoint) -> None:
         """ 
         Initialize the sensor. 
         """
         CoordinatorEntity.__init__(self, coordinator)
-        EliteControlEntity.__init__(self, coordinator, device, resource, datapoint)
+        EliteCloudEntity.__init__(self, coordinator, device, resource, datapoint)
         
         # The unique identifiers for this sensor within Home Assistant
         self.entity_id = ENTITY_ID_FORMAT.format(self._attr_unique_id)   # Device.name + params.key
@@ -94,7 +94,7 @@ class EliteControlBinarySensor(CoordinatorEntity, BinarySensorEntity, EliteContr
         self._attr_device_class = self.get_binary_sensor_device_class()
 
         # Create all value related attributes (but with unknown value).
-        # After this constructor ends, base class EliteControlEntity.async_added_to_hass() will 
+        # After this constructor ends, base class EliteCloudEntity.async_added_to_hass() will 
         # set the value using the restored value from the last HA run. Or otherwise it will
         # be set when the first push-data is received.
         self._update_value(None, force=True)
@@ -107,7 +107,7 @@ class EliteControlBinarySensor(CoordinatorEntity, BinarySensorEntity, EliteContr
         """
 
         # find the correct device corresponding to this sensor
-        data:dict[str, EliteControlDeviceStatus] = self._coordinator.data
+        data:dict[str, EliteCloudDeviceStatus] = self._coordinator.data
 
         status = data.get(self._device.uuid) if data is not None else None
         value = status.get(self._datapoint.key) if status is not None else None
@@ -123,7 +123,7 @@ class EliteControlBinarySensor(CoordinatorEntity, BinarySensorEntity, EliteContr
         """
         changed = super()._update_value(data_value, force)
 
-        # Convert from EliteControl data value to Home Assistant attributes
+        # Convert from EliteCloud data value to Home Assistant attributes
         if data_value in BINARY_SENSOR_VALUES_ON:
             is_on = True
         elif data_value in BINARY_SENSOR_VALUES_OFF:

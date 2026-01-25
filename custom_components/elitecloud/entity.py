@@ -35,12 +35,12 @@ from .const import (
     utcnow,
 )
 from .coordinator import (
-    EliteControlCoordinator,
+    EliteCloudCoordinator,
 )
 from .data import (
-    EliteControlDatapoint,
-    EliteControlDeviceConfig,
-    EliteControlDeviceResource,
+    EliteCloudDatapoint,
+    EliteCloudDeviceConfig,
+    EliteCloudDeviceResource,
 )
 
 # Define logger
@@ -48,7 +48,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 @dataclass
-class EliteControlEntityExtraData(ExtraStoredData):
+class EliteCloudEntityExtraData(ExtraStoredData):
     """Object to hold extra stored data."""
     data_value: Any = None
     
@@ -66,13 +66,13 @@ class EliteControlEntityExtraData(ExtraStoredData):
         )
 
 
-class EliteControlEntity(RestoreEntity):
+class EliteCloudEntity(RestoreEntity):
     """
     Common funcionality for all Entities:
-    (EliteControlSensor, EliteControlBinarySensor, ...)
+    (EliteCloudSensor, EliteCloudBinarySensor, ...)
     """
     
-    def __init__(self, coordinator: EliteControlCoordinator, device: EliteControlDeviceConfig, resource: EliteControlDeviceResource, datapoint: EliteControlDatapoint):
+    def __init__(self, coordinator: EliteCloudCoordinator, device: EliteCloudDeviceConfig, resource: EliteCloudDeviceResource, datapoint: EliteCloudDatapoint):
 
         # Remember the static meta parameters for this entity
         self._coordinator = coordinator
@@ -81,8 +81,8 @@ class EliteControlEntity(RestoreEntity):
         self._datapoint = datapoint
 
         # The unique identifiers for this sensor within Home Assistant
-        self.object_id       = EliteControlEntity.create_id(PREFIX_ID, device.uuid, datapoint.key) # elitecontrol_<device_uuid>_<key>
-        self._attr_unique_id = EliteControlEntity.create_id(PREFIX_ID, device.name, datapoint.key) # elitecontrol_<device_name>_<key>
+        self.object_id       = EliteCloudEntity.create_id(PREFIX_ID, device.uuid, datapoint.key) # elitecontrol_<device_uuid>_<key>
+        self._attr_unique_id = EliteCloudEntity.create_id(PREFIX_ID, device.name, datapoint.key) # elitecontrol_<device_name>_<key>
 
         name = resource.name or datapoint.key.replace('_',' ')
         self._attr_has_entity_name = True
@@ -125,11 +125,11 @@ class EliteControlEntity(RestoreEntity):
 
 
     @property
-    def extra_restore_state_data(self) -> EliteControlEntityExtraData | None:
+    def extra_restore_state_data(self) -> EliteCloudEntityExtraData | None:
         """
         Return entity specific state data to be restored on next HA run.
         """
-        return EliteControlEntityExtraData(
+        return EliteCloudEntityExtraData(
             data_value = self._data_value
         )
     

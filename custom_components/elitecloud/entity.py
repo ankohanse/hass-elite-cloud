@@ -89,6 +89,9 @@ class EliteCloudEntity(RestoreEntity):
         self._attr_name = name 
         self._name = name
 
+        self._attr_entity_registry_enabled_default = resource.is_active
+        self._attr_entity_registry_visible_default = not resource.is_hidden
+
         # Attributes to be restored in the next HA run
         self._data_value: Any = None     # Original data value as returned from Api
 
@@ -199,19 +202,19 @@ class EliteCloudEntity(RestoreEntity):
         section = str.split(self._datapoint.key, '_')[0]
 
         match section:
-            case 'area':     return None                            # Running/stopped
+            case 'area':     return None                            # On/Off
             case 'output':   return None                            # On/Off
             case 'tamper':   return BinarySensorDeviceClass.TAMPER  # Tamper/clear
             case 'system':   return BinarySensorDeviceClass.PROBLEM # problem/ok
 
         match self._resource.icon:
+            case 'ic_s_running':     return BinarySensorDeviceClass.MOTION
             case 'ic_s_detect_body': return BinarySensorDeviceClass.MOTION
             case 'ic_s_detect_bottom': return BinarySensorDeviceClass.MOTION
             case 'ic_s_detect_top': return BinarySensorDeviceClass.MOTION
             case 'ic_s_detect_co2': return BinarySensorDeviceClass.CO
             case 'ic_s_detect_fire': return BinarySensorDeviceClass.SMOKE
             case 'ic_s_detect_odor': return BinarySensorDeviceClass.GAS
-            case 'ic_s_running':     return BinarySensorDeviceClass.RUNNING
             case 'ic_s_window_closes': return BinarySensorDeviceClass.WINDOW
             case 'ic_s_window_open': return BinarySensorDeviceClass.WINDOW
             case 'ic_s_door_closed': return BinarySensorDeviceClass.DOOR

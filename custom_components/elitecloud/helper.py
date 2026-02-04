@@ -49,7 +49,7 @@ class EliteCloudEntityHelper:
             for datapoint in EliteCloudDatapoint.for_platform(target_platform):
 
                 resource: EliteCloudDeviceResource = next( (r for r in device.resources if r.key==datapoint.key), None )
-                if resource is None or resource.is_hidden:
+                if resource is None:
                     continue
 
                 # Create a Sensor, Binary_Sensor, Number, Select, Switch or other entity for this datapoint

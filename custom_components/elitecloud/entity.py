@@ -140,8 +140,8 @@ class EliteCloudEntity(RestoreEntity):
     @staticmethod
     def create_id(*args):
         s = '_'.join(str(item) for item in args if item is not None).strip('_')
-        s = re.sub(' ', '_', s)
-        s = re.sub('[^a-z0-9_-]+', '', s.lower())
+        s = re.sub('[ -]', '_', s)
+        s = re.sub('[^a-z0-9_]+', '', s.lower())
         return s            
     
     

@@ -19,7 +19,9 @@ ISSUE_URL = "https://github.com/ankohanse/hass-elite-cloud/issues"
 
 # Map platform to pf codes for both enabled and disabled entities
 PLATFORM_TO_PF: dict[Platform, str] = {
+    Platform.ALARM_CONTROL_PANEL: "alm",
     Platform.BINARY_SENSOR: "bin",
+    Platform.SWITCH: "sw",
 }
 PLATFORMS = list(PLATFORM_TO_PF.keys())
 
@@ -46,9 +48,13 @@ ATTR_DATA_VALUE = "elitecontrol_value"
 # Extra attributes that are restored from the previous HA run
 ATTR_STORED_DATA_VALUE = "value"
 
-BINARY_SENSOR_VALUES_ON = [True, 1, '1', 'on', 'armed', 'open']
-BINARY_SENSOR_VALUES_OFF = [False, 0, '0', '', 'off', 'disarmed', 'sealed']
+BINARY_SENSOR_VALUES_ON = [True, 1, '1', 'on', 'staying', 'stay armed', 'armed', 'open']
+BINARY_SENSOR_VALUES_OFF = [False, 0, '0', '', 'off', 'stay disarmed', 'disarmed', 'sealed']
 BINARY_SENSOR_VALUES_ALL = BINARY_SENSOR_VALUES_ON + BINARY_SENSOR_VALUES_OFF
+
+SWITCH_VALUES_ON = ['on']
+SWITCH_VALUES_OFF = ['', 'off']
+SWITCH_VALUES_ALL = SWITCH_VALUES_ON + SWITCH_VALUES_OFF
 
 API_RETRY_ATTEMPTS = 2
 API_RETRY_DELAY = 5    # seconds

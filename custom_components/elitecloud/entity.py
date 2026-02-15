@@ -84,13 +84,11 @@ class EliteCloudEntity(RestoreEntity):
         self.object_id       = EliteCloudEntity.create_id(PREFIX_ID, device.uuid, datapoint.key) # elitecontrol_<device_uuid>_<key>
         self._attr_unique_id = EliteCloudEntity.create_id(PREFIX_ID, device.name, datapoint.key) # elitecontrol_<device_name>_<key>
 
-        name = resource.name or datapoint.key.replace('_',' ')
         self._attr_has_entity_name = True
-        self._attr_name = name 
-        self._name = name
+        self._attr_name = resource.name 
+        self._name = resource.name
 
-        self._attr_entity_registry_enabled_default = resource.is_active
-        self._attr_entity_registry_visible_default = not resource.is_hidden
+        self._attr_entity_registry_enabled_default = resource.is_active and not resource.is_hidden
 
         # Attributes to be restored in the next HA run
         self._data_value: Any = None     # Original data value as returned from Api

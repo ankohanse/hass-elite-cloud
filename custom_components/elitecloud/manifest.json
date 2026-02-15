@@ -10,7 +10,7 @@
   "issue_tracker": "https://github.com/ankohanse/hass-elite-cloud/issues",
   "loggers": ["custom_components.elitecloud"],
   "requirements": [
-    "pyelitecloud==0.1.3",
+    "pyelitecloud==0.2.0",
     "jsonata-python>=0.2.5,<1.0.0"
   ],
   "version": "2026.01.1"

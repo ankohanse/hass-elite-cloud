@@ -6,10 +6,9 @@ import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant import exceptions
-from homeassistant.components.binary_sensor import PLATFORM_SCHEMA as PARENT_PLATFORM_SCHEMA
-from homeassistant.components.binary_sensor import BinarySensorEntity
-from homeassistant.components.binary_sensor import BinarySensorDeviceClass
-from homeassistant.components.binary_sensor import ENTITY_ID_FORMAT
+from homeassistant.components.switch import SwitchDeviceClass
+from homeassistant.components.switch import SwitchEntity
+from homeassistant.components.switch import ENTITY_ID_FORMAT
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_NAME
 from homeassistant.const import CONF_UNIQUE_ID
@@ -36,8 +35,8 @@ from collections import defaultdict
 from collections import namedtuple
 
 from .const import (
-    BINARY_SENSOR_VALUES_ON,
-    BINARY_SENSOR_VALUES_OFF,
+    SWITCH_VALUES_ON,
+    SWITCH_VALUES_OFF,
     utcnow,
 )
 from .coordinator import (
@@ -59,22 +58,15 @@ from .helper import (
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORM_SCHEMA = PARENT_PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_NAME): cv.string,
-        vol.Optional(CONF_UNIQUE_ID): cv.string,
-    }
-)
-
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
     """
     Setting up the adding and updating of binary_sensor entities
     """
-    await EliteCloudEntityHelper(hass, config_entry).async_setup_entry(Platform.BINARY_SENSOR, EliteCloudBinarySensor, async_add_entities)
+    await EliteCloudEntityHelper(hass, config_entry).async_setup_entry(Platform.SWITCH, EliteCloudSwitch, async_add_entities)
 
 
-class EliteCloudBinarySensor(CoordinatorEntity, BinarySensorEntity, EliteCloudEntity):
+class EliteCloudSwitch(CoordinatorEntity, SwitchEntity, EliteCloudEntity):
     """
     Representation of an entity that is part of a gateway, tank or pump.
     """
@@ -90,7 +82,8 @@ class EliteCloudBinarySensor(CoordinatorEntity, BinarySensorEntity, EliteCloudEn
         self.entity_id = ENTITY_ID_FORMAT.format(self._attr_unique_id)   # Device.name + params.key
 
         # update creation-time only attributes
-        self._attr_device_class = self.get_binary_sensor_device_class()
+        self._attr_entity_category = self.get_entity_category()
+        self._attr_device_class = SwitchDeviceClass.SWITCH
 
         # Create all value related attributes (but with unknown value).
         # After this constructor ends, base class EliteCloudEntity.async_added_to_hass() will 
@@ -107,7 +100,6 @@ class EliteCloudBinarySensor(CoordinatorEntity, BinarySensorEntity, EliteCloudEn
 
         # find the correct device corresponding to this sensor
         data:dict[str, EliteCloudDeviceStatus] = self._coordinator.data
-
         status = data.get(self._device.uuid) if data is not None else None
         value = status.get(self._datapoint.key) if status is not None else None
 
@@ -123,9 +115,9 @@ class EliteCloudBinarySensor(CoordinatorEntity, BinarySensorEntity, EliteCloudEn
         changed = super()._update_value(data_value, force)
 
         # Convert from EliteCloud data value to Home Assistant attributes
-        if data_value in BINARY_SENSOR_VALUES_ON:
+        if data_value in SWITCH_VALUES_ON:
             is_on = True
-        elif data_value in BINARY_SENSOR_VALUES_OFF:
+        elif data_value in SWITCH_VALUES_OFF:
             is_on = False
         else:
             is_on = None
@@ -138,5 +130,47 @@ class EliteCloudBinarySensor(CoordinatorEntity, BinarySensorEntity, EliteCloudEn
         
         return changed
     
+
+    async def async_turn_on(self, **kwargs) -> None:
+        """
+        Turn the entity on.
+        """
+
+        # Already on?
+        data:dict[str, EliteCloudDeviceStatus] = self._coordinator.data
+        status = data.get(self._device.uuid) if data is not None else None
+        value = status.get(self._datapoint.key) if status is not None else None
+
+        if value in SWITCH_VALUES_ON:
+            return
+        
+        # Toggle from Off to On
+        await self.async_toggle()
     
+    
+    async def async_turn_off(self, **kwargs) -> None:
+        """
+        Turn the entity off.
+        """
+
+        # Already off?
+        data:dict[str, EliteCloudDeviceStatus] = self._coordinator.data
+        status = data.get(self._device.uuid) if data is not None else None
+        value = status.get(self._datapoint.key) if status is not None else None
+
+        if value in SWITCH_VALUES_OFF:
+            return
+        
+        # Toggle from On to Off
+        await self.async_toggle()
+
+
+    async def async_toggle(self, **kwargs) -> None:
+        """
+        Toggle the switch from On to Off or from Off to On
+        """
+        status = await self._coordinator.async_toggle_datapoint(self._device, self._datapoint)
+        if status is not None:
+            self._update_value(status, force=True)
+            self.async_write_ha_state()
     

@@ -39,6 +39,7 @@ from .api import (
     EliteCloudApiWrap,
 )
 from .data import (
+    EliteCloudDatapoint,
     EliteCloudDeviceConfig,
     EliteCloudDeviceStatus,
 )
@@ -323,6 +324,16 @@ class EliteCloudCoordinator(DataUpdateCoordinator[dict[str,EliteCloudDeviceStatu
 
         return self._get_data()
 
+
+    async def async_toggle_datapoint(self, device: EliteCloudDeviceConfig, datapoint: EliteCloudDatapoint):
+        try:
+            await self._api.async_toggle_datapoint(device, datapoint)
+
+        except Exception as ex:
+            # Log issue. We expect it to be resolved on a next poll.
+            _LOGGER.debug(ex)
+            _LOGGER.info(f"Failed to toggle value for device '{device.name}', key {datapoint.key}")
+    
 
     async def async_subscribe_to_push_data(self):
         """

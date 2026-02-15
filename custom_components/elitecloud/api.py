@@ -17,6 +17,8 @@ from homeassistant.helpers.httpx_client import create_async_httpx_client
 from pyelitecloud import (
     AsyncEliteCloudApi,
     EliteCloudApiFlag,
+    EliteCloudCmdSection,
+    EliteCloudCmdAction,
     EliteCloudConnectError,
     EliteCloudAuthError,
     EliteCloudSite,
@@ -33,6 +35,7 @@ from .const import (
     utcmin,
 )
 from .data import (
+    EliteCloudDatapoint,
     EliteCloudDeviceConfig,
     EliteCloudDeviceStatus,
 )
@@ -251,6 +254,18 @@ class EliteCloudApiWrap(AsyncEliteCloudApi):
         for id in old_status_ids:
             if not id in new_status_ids:
                 self.status.pop(id,'')
+
+
+    async def async_toggle_datapoint(self, device: EliteCloudDeviceConfig, datapoint: EliteCloudDatapoint):
+        """
+        Send a toggle command to an input or output
+        """
+        site_uuid = device.uuid
+        id = datapoint.id
+        section = EliteCloudCmdSection(datapoint.sec)
+        action = EliteCloudCmdAction.TOGGLE
+
+        await super().send_site_command(site_uuid, section, id, action)
 
 
     async def async_subscribe_to_push_data(self, callback):

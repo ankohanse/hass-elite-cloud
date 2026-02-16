@@ -11,8 +11,6 @@
 [Home Assistant](https://home-assistant.io/) Custom Integration for Arrowhead Alarm Systems ESL, ESL-2, Elite S and Elite S devices.
 It is likely that other systems supported by the Elite Cloud app will function with this integration as well.
 
-The custom integration is still a work-in-progress and currently only provides read-only entities. So status of area's, input's and output's of the device. But no methods yet to arm or disarm an area.
-
 This component connects to the the Elite Cloud servers and automatically determines which devices are available there for the specified account.
 
 There are several other Home Assistant integrations available for Arrowhead alarm systems, so make sure you choose the right one:
@@ -48,6 +46,7 @@ Copying all files in `/custom_components/elitecloud/` folder from this repo into
     │   ├── translations
     │   │   └── en.json
     │   ├── __init__.py
+    │   ├── alarm_control_panel.py
     │   ├── api.py
     │   ├── binary_sensor.py
     │   ├── config_flow.py
@@ -58,7 +57,8 @@ Copying all files in `/custom_components/elitecloud/` folder from this repo into
     │   ├── entity.py
     │   ├── helper.py
     │   ├── manifest.json
-    │   └── strings.json  
+    │   ├── strings.json
+    │   └── switch.py
     ```
 
 2. Restart Home Assistant.
@@ -88,9 +88,9 @@ After succcessful setup, all devices from the Smart Water profile should show up
 
 ![controller_list](documentation/controller_list.png)
 
-On the individual device pages, the hardware related device information is displayed, together with sensors typically grouped into main entity sensors, controls and diagnostics.
+On the individual device pages, the hardware related device information is displayed, together with sensors typically grouped into main entity controls, sensors and configuration.
 
-Any sensors that you do not need can be manually disabled using the Home Assistant integration pages.
+Any entities that you do not need can be manually disabled using the Home Assistant integration pages.
 
 ![controller_detail](documentation/controller_detail.png)
 

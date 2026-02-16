@@ -172,7 +172,9 @@ class EliteCloudEntity(RestoreEntity):
         if force or self._data_value != data_value:
 
             self._data_value = data_value
+            self._attr_icon = self.get_icon()
             changed = True
+
 
         return changed
 
@@ -192,7 +194,15 @@ class EliteCloudEntity(RestoreEntity):
         
     def get_icon(self):
         """Return appropriate icon"""
-        return None
+
+        # Specific check for the 'snooze sensor x' switches
+        if self._datapoint.key.startswith("snooze"):    
+            return 'mdi:pause-circle' if self._data_value=="bypass" else 'mdi:play-circle'
+
+        # For Sensors
+        match self._data_value:
+            case "bypass": return 'mdi:pause-circle'
+            case _:        return None      # icon is determined by device_class
     
     
     def get_binary_sensor_device_class(self):

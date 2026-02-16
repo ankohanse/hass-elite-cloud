@@ -124,7 +124,6 @@ class EliteCloudSwitch(CoordinatorEntity, SwitchEntity, EliteCloudEntity):
 
         # Update Home Assistant attributes
         if force or self._attr_is_on != is_on:
-            
             self._attr_is_on = is_on
             changed = True
         
@@ -135,42 +134,23 @@ class EliteCloudSwitch(CoordinatorEntity, SwitchEntity, EliteCloudEntity):
         """
         Turn the entity on.
         """
-
-        # Already on?
-        data:dict[str, EliteCloudDeviceStatus] = self._coordinator.data
-        status = data.get(self._device.uuid) if data is not None else None
-        value = status.get(self._datapoint.key) if status is not None else None
-
-        if value in SWITCH_VALUES_ON:
-            return
-        
-        # Toggle from Off to On
-        await self.async_toggle()
+        if not self.is_on:
+            # Toggle from Off to On
+            await self.async_toggle()
     
     
     async def async_turn_off(self, **kwargs) -> None:
         """
         Turn the entity off.
         """
-
-        # Already off?
-        data:dict[str, EliteCloudDeviceStatus] = self._coordinator.data
-        status = data.get(self._device.uuid) if data is not None else None
-        value = status.get(self._datapoint.key) if status is not None else None
-
-        if value in SWITCH_VALUES_OFF:
-            return
-        
-        # Toggle from On to Off
-        await self.async_toggle()
+        if self.is_on:
+            # Toggle from On to Off
+            await self.async_toggle()
 
 
     async def async_toggle(self, **kwargs) -> None:
         """
         Toggle the switch from On to Off or from Off to On
         """
-        status = await self._coordinator.async_toggle_datapoint(self._device, self._datapoint)
-        if status is not None:
-            self._update_value(status, force=True)
-            self.async_write_ha_state()
+        await self._coordinator.async_toggle_datapoint(self._device, self._datapoint)
     

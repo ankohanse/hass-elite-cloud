@@ -23,7 +23,7 @@ class DP:
     id: int             # id within section
     name: str           # Friendly name, used as default when no name is returned in resources.
     pf: str             # Target platform abbreviation; Sensor, Binary_Sensor, Switch, Alarm, etc. If None then not added as entity but may be used internally
-    flag: str           # Comma separated flags: enabled/disabled (e or d), entity category (conf, diag or none) 
+    flag: str           # Comma separated flags: enabled/disabled (e or d), entity category (conf, diag or none), default name (dnm)
     rpath: str          # Path for resource params within responses from remote server
     spath: str          # Path for status value within responses from remote server. Note the offset between idx and id!
     fmt: type           # Data format (s=str, b=bool, i=int, t=timestamp, f[n]=float with precision)
@@ -64,6 +64,23 @@ DATAPOINTS = [
     DP(key="sensor_14",  sec="input",  id=14, name="Sensor 14",  pf="bin", flag="e,none",  rpath="input[idx=13]",  spath="input[id=14].status", fmt="b",  unit="",  opt={}),
     DP(key="sensor_15",  sec="input",  id=15, name="Sensor 15",  pf="bin", flag="e,none",  rpath="input[idx=14]",  spath="input[id=15].status", fmt="b",  unit="",  opt={}),
     DP(key="sensor_16",  sec="input",  id=16, name="Sensor 16",  pf="bin", flag="e,none",  rpath="input[idx=15]",  spath="input[id=16].status", fmt="b",  unit="",  opt={}),
+
+    DP(key="snooze_1",   sec="input",  id=1,  name="Snooze Sensor 1",   pf="sw", flag="e,conf,dnm",  rpath="input[idx=0]",   spath="input[id=1].status",  fmt="b",  unit="",  opt={}),
+    DP(key="snooze_2",   sec="input",  id=2,  name="Snooze Sensor 2",   pf="sw", flag="e,conf,dnm",  rpath="input[idx=1]",   spath="input[id=2].status",  fmt="b",  unit="",  opt={}),
+    DP(key="snooze_3",   sec="input",  id=3,  name="Snooze Sensor 3",   pf="sw", flag="e,conf,dnm",  rpath="input[idx=2]",   spath="input[id=3].status",  fmt="b",  unit="",  opt={}),
+    DP(key="snooze_4",   sec="input",  id=4,  name="Snooze Sensor 4",   pf="sw", flag="e,conf,dnm",  rpath="input[idx=3]",   spath="input[id=4].status",  fmt="b",  unit="",  opt={}),
+    DP(key="snooze_5",   sec="input",  id=5,  name="Snooze Sensor 5",   pf="sw", flag="e,conf,dnm",  rpath="input[idx=4]",   spath="input[id=5].status",  fmt="b",  unit="",  opt={}),
+    DP(key="snooze_6",   sec="input",  id=6,  name="Snooze Sensor 6",   pf="sw", flag="e,conf,dnm",  rpath="input[idx=5]",   spath="input[id=6].status",  fmt="b",  unit="",  opt={}),
+    DP(key="snooze_7",   sec="input",  id=7,  name="Snooze Sensor 7",   pf="sw", flag="e,conf,dnm",  rpath="input[idx=6]",   spath="input[id=7].status",  fmt="b",  unit="",  opt={}),
+    DP(key="snooze_8",   sec="input",  id=8,  name="Snooze Sensor 8",   pf="sw", flag="e,conf,dnm",  rpath="input[idx=7]",   spath="input[id=8].status",  fmt="b",  unit="",  opt={}),
+    DP(key="snooze_9",   sec="input",  id=9,  name="Snooze Sensor 9",   pf="sw", flag="e,conf,dnm",  rpath="input[idx=8]",   spath="input[id=9].status",  fmt="b",  unit="",  opt={}),
+    DP(key="snooze_10",  sec="input",  id=10, name="Snooze Sensor 10",  pf="sw", flag="e,conf,dnm",  rpath="input[idx=9]",   spath="input[id=10].status", fmt="b",  unit="",  opt={}),
+    DP(key="snooze_11",  sec="input",  id=11, name="Snooze Sensor 11",  pf="sw", flag="e,conf,dnm",  rpath="input[idx=10]",  spath="input[id=11].status", fmt="b",  unit="",  opt={}),
+    DP(key="snooze_12",  sec="input",  id=12, name="Snooze Sensor 12",  pf="sw", flag="e,conf,dnm",  rpath="input[idx=11]",  spath="input[id=12].status", fmt="b",  unit="",  opt={}),
+    DP(key="snooze_13",  sec="input",  id=13, name="Snooze Sensor 13",  pf="sw", flag="e,conf,dnm",  rpath="input[idx=12]",  spath="input[id=13].status", fmt="b",  unit="",  opt={}),
+    DP(key="snooze_14",  sec="input",  id=14, name="Snooze Sensor 14",  pf="sw", flag="e,conf,dnm",  rpath="input[idx=13]",  spath="input[id=14].status", fmt="b",  unit="",  opt={}),
+    DP(key="snooze_15",  sec="input",  id=15, name="Snooze Sensor 15",  pf="sw", flag="e,conf,dnm",  rpath="input[idx=14]",  spath="input[id=15].status", fmt="b",  unit="",  opt={}),
+    DP(key="snooze_16",  sec="input",  id=16, name="Snooze Sensor 16",  pf="sw", flag="e,conf,dnm",  rpath="input[idx=15]",  spath="input[id=16].status", fmt="b",  unit="",  opt={}),
 
     DP(key="control_1",  sec="output", id=1,  name="Control 1",  pf="sw",  flag="e,none",  rpath="output[idx=0]",  spath="output[id=1].status",  fmt="b",  unit="",  opt={}),
     DP(key="control_2",  sec="output", id=2,  name="Control 2",  pf="sw",  flag="e,none",  rpath="output[idx=1]",  spath="output[id=2].status",  fmt="b",  unit="",  opt={}),
@@ -113,6 +130,7 @@ class EliteCloudDatapoint(DP):
         flag_parts = self.flag.split(',')
         self.flag_enabled  = flag_parts[0] if len(flag_parts) > 0 else ''
         self.flag_category = flag_parts[1] if len(flag_parts) > 1 else ''
+        self.flag_def_name = flag_parts[2] if len(flag_parts) > 2 else ''
 
 
     @staticmethod
@@ -206,9 +224,13 @@ class EliteCloudDeviceResource():
                 if not isinstance(r, dict):
                     continue
 
+                name = r.get("name")
+                if not name or datapoint.flag_def_name:
+                    name = datapoint.name
+
                 res = EliteCloudDeviceResource(
                     key = datapoint.key,
-                    name = r.get("name") or datapoint.name,
+                    name = name,
                     icon = r.get("icon_name"),
                     is_hidden = r.get("is_hidden", True),
                     is_active = r.get("is_active", False),

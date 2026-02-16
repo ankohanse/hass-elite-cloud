@@ -335,6 +335,26 @@ class EliteCloudCoordinator(DataUpdateCoordinator[dict[str,EliteCloudDeviceStatu
             _LOGGER.info(f"Failed to toggle value for device '{device.name}', key {datapoint.key}")
     
 
+    async def async_toggle_stay(self, device: EliteCloudDeviceConfig, datapoint: EliteCloudDatapoint, code:str):
+        try:
+            await self._api.async_toggle_stay(device, datapoint, code)
+
+        except Exception as ex:
+            # Log issue. We expect it to be resolved on a next poll.
+            _LOGGER.debug(ex)
+            _LOGGER.info(f"Failed to toggle stay for device '{device.name}', key {datapoint.key}")
+
+
+    async def async_toggle_arm(self, device: EliteCloudDeviceConfig, datapoint: EliteCloudDatapoint, code:str):
+        try:
+            await self._api.async_toggle_arm(device, datapoint, code)
+
+        except Exception as ex:
+            # Log issue. We expect it to be resolved on a next poll.
+            _LOGGER.debug(ex)
+            _LOGGER.info(f"Failed to toggle arm for device '{device.name}', key {datapoint.key}")
+
+
     async def async_subscribe_to_push_data(self):
         """
         Subscribe to push data

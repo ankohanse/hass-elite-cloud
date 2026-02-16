@@ -48,12 +48,12 @@ ATTR_DATA_VALUE = "elitecontrol_value"
 # Extra attributes that are restored from the previous HA run
 ATTR_STORED_DATA_VALUE = "value"
 
-BINARY_SENSOR_VALUES_ON = [True, 1, '1', 'on', 'staying', 'stay armed', 'armed', 'open']
-BINARY_SENSOR_VALUES_OFF = [False, 0, '0', '', 'off', 'stay disarmed', 'disarmed', 'sealed']
+BINARY_SENSOR_VALUES_ON = [True, 1, '1', 'on', 'open']
+BINARY_SENSOR_VALUES_OFF = [False, 0, '0', '', 'off', 'sealed']
 BINARY_SENSOR_VALUES_ALL = BINARY_SENSOR_VALUES_ON + BINARY_SENSOR_VALUES_OFF
 
-SWITCH_VALUES_ON = ['on']
-SWITCH_VALUES_OFF = ['', 'off']
+SWITCH_VALUES_ON = ['on', 'bypass']
+SWITCH_VALUES_OFF = ['', 'off', 'bypass cleared', 'open', 'sealed']
 SWITCH_VALUES_ALL = SWITCH_VALUES_ON + SWITCH_VALUES_OFF
 
 API_RETRY_ATTEMPTS = 2

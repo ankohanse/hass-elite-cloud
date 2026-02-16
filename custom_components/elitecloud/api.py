@@ -268,6 +268,30 @@ class EliteCloudApiWrap(AsyncEliteCloudApi):
         await super().send_site_command(site_uuid, section, id, action)
 
 
+    async def async_toggle_stay(self, device: EliteCloudDeviceConfig, datapoint: EliteCloudDatapoint, code:str):
+        """
+        Send a toggle command to area to arm or disarm for stay
+        """
+        site_uuid = device.uuid
+        id = datapoint.id
+        section = EliteCloudCmdSection.STAY
+        action = EliteCloudCmdAction.TOGGLE
+
+        await super().send_site_command(site_uuid, section, id, action, passcode=code)
+
+
+    async def async_toggle_arm(self, device: EliteCloudDeviceConfig, datapoint: EliteCloudDatapoint, code:str):
+        """
+        Send a toggle command to area to arm or disarm for stay
+        """
+        site_uuid = device.uuid
+        id = datapoint.id
+        section = EliteCloudCmdSection.ARM
+        action = EliteCloudCmdAction.TOGGLE
+
+        await super().send_site_command(site_uuid, section, id, action, passcode=code)
+
+
     async def async_subscribe_to_push_data(self, callback):
         """
         Subscribe to changes in site status.

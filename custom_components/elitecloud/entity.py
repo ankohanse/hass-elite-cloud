@@ -214,6 +214,7 @@ class EliteCloudEntity(RestoreEntity):
             case 'output':   return None                            # On/Off
             case 'tamper':   return BinarySensorDeviceClass.TAMPER  # Tamper/clear
             case 'system':   return BinarySensorDeviceClass.PROBLEM # problem/ok
+            case 'keypad':   return BinarySensorDeviceClass.PROBLEM # problem/ok
 
         match self._resource.icon:
             case 'ic_s_running':     return BinarySensorDeviceClass.MOTION

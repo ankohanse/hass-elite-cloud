@@ -48,8 +48,8 @@ ATTR_DATA_VALUE = "elitecontrol_value"
 # Extra attributes that are restored from the previous HA run
 ATTR_STORED_DATA_VALUE = "value"
 
-BINARY_SENSOR_VALUES_ON = [True, 1, '1', 'on', 'open']
-BINARY_SENSOR_VALUES_OFF = [False, 0, '0', '', 'off', 'sealed']
+BINARY_SENSOR_VALUES_ON = ['True', '1', 'on', 'open']
+BINARY_SENSOR_VALUES_OFF = ['', 'False', '0', 'off', 'sealed']
 BINARY_SENSOR_VALUES_ALL = BINARY_SENSOR_VALUES_ON + BINARY_SENSOR_VALUES_OFF
 
 SWITCH_VALUES_ON = ['on', 'bypass']

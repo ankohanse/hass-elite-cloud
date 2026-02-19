@@ -232,13 +232,9 @@ class EliteCloudDeviceResource():
                 if not isinstance(r, dict):
                     continue
 
-                name = r.get("name")
-                if not name or datapoint.flag_def_name:
-                    name = datapoint.name
-
                 res = EliteCloudDeviceResource(
                     key = datapoint.key,
-                    name = name,
+                    name = r.get("name"),
                     icon = r.get("icon_name"),
                     is_hidden = r.get("is_hidden", True),
                     is_active = r.get("is_active", False),

@@ -84,9 +84,14 @@ class EliteCloudEntity(RestoreEntity):
         self.object_id       = EliteCloudEntity.create_id(PREFIX_ID, device.uuid, datapoint.key) # elitecontrol_<device_uuid>_<key>
         self._attr_unique_id = EliteCloudEntity.create_id(PREFIX_ID, device.name, datapoint.key) # elitecontrol_<device_name>_<key>
 
+        # The friendly name of the entitiy
+        name = resource.name
+        if not name or datapoint.flag_def_name:
+            name = datapoint.name        
+
         self._attr_has_entity_name = True
-        self._attr_name = resource.name 
-        self._name = resource.name
+        self._attr_name = name
+        self._name = name
 
         self._attr_entity_registry_enabled_default = resource.is_active and not resource.is_hidden
 

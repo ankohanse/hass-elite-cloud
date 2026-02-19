@@ -99,18 +99,22 @@ DATAPOINTS = [
     DP(key="control_15", sec="output", id=15, name="Control 15", pf="sw",  flag="e,none",  rpath="output[idx=14]", spath="output[id=15].status", fmt="s",  unit="",  opt={}),
     DP(key="control_16", sec="output", id=16, name="Control 16", pf="sw",  flag="e,none",  rpath="output[idx=15]", spath="output[id=16].status", fmt="s",  unit="",  opt={}),
 
-    DP(key="tamper",     sec="tamper", id=0,  name="Tamper",     pf="bin", flag="e,diag",  rpath="=tamper",        spath="tamper.status",        fmt="s",  unit="",  opt={}),
-    DP(key="system",     sec="system", id=0,  name="System",     pf="bin", flag="e,diag",  rpath="=system",        spath="system.status",        fmt="s",  unit="",  opt={}),
-    DP(key="keypad",     sec="keypad", id=0,  name="Keypad",     pf="bin", flag="e,diag",  rpath="=keypad",        spath="#keypad",              fmt="b",  unit="",  opt={}),
+    # All definitions below use BinarySensorDeviceClass.PROBLEM. I.e.False -> OK and True -> Fault
+    DP(key="keypad",     sec="keypad", id=0,  name="Keypad",         pf="bin", flag="e,diag",  rpath="=keypad", spath="#keypad",                        fmt="b",  unit="",  opt={}),
+    DP(key="system",     sec="system", id=0,  name="System",         pf="bin", flag="e,diag",  rpath="=system", spath="#system",                        fmt="s",  unit="",  opt={}),
+
+    DP(key="mains",      sec="tamper", id=0,  name="Mains Power",    pf="bin", flag="e,diag",  rpath="=tamper", spath="'mains fail' in tamper.status",  fmt="s",  unit="",  opt={}),
+    DP(key="battery",    sec="tamper", id=0,  name="Backup Battery", pf="bin", flag="e,diag",  rpath="=tamper", spath="'battery low' in tamper.status", fmt="s",  unit="",  opt={}),
 ]
 
 DATAPATHS_EXTRA = {
-    '#keypad':     "$not(is_keypad_bus_online)",
+    '#keypad': "$not(is_keypad_bus_online)",
+    '#system': "$count(system.status)!=0 or $count(tamper.status)!=0"
 }
 DATAPATHS_CONST = {
-    '=tamper':      { 'name': 'Tamper', 'icon_name': '', 'is_hidden': False, 'is_active': True},
-    '=system':      { 'name': 'System', 'icon_name': '', 'is_hidden': False, 'is_active': True},
-    '=keypad':      { 'name': 'Keypad', 'icon_name': '', 'is_hidden': False, 'is_active': True},
+    '=tamper':      { 'name': '', 'icon_name': '', 'is_hidden': False, 'is_active': True},
+    '=system':      { 'name': '', 'icon_name': '', 'is_hidden': False, 'is_active': True},
+    '=keypad':      { 'name': '', 'icon_name': '', 'is_hidden': False, 'is_active': True},
 }
 
 class EliteCloudDatapoint(DP):
@@ -161,7 +165,8 @@ class EliteCloudDeviceConfig():
     serial: str
     mac: str
     type: str
-    version: str
+    pnl_version: str
+    mod_version: str
     resources: 'list[EliteCloudDeviceResource]'
 
 
@@ -170,13 +175,14 @@ class EliteCloudDeviceConfig():
         """
         """
         return EliteCloudDeviceConfig(
-            uuid       = d.get("uuid", None),
-            name       = d.get("name", None),
-            serial     = d.get("panel", {}).get("serial_no", None),
-            mac        = d.get("panel", {}).get("mac_address", None),
-            type       = d.get("panel", {}).get("specification", {}).get("module_type", None),
-            version    = d.get("panel", {}).get("specification", {}).get("module_version", None),
-            resources  = EliteCloudDeviceResource.from_data(d.get("resources", {}))
+            uuid        = d.get("uuid", None),
+            name        = d.get("name", None),
+            serial      = d.get("panel", {}).get("serial_no", None),
+            mac         = d.get("panel", {}).get("mac_address", None),
+            type        = d.get("panel", {}).get("specification", {}).get("module_type", None),
+            pnl_version = d.get("panel", {}).get("specification", {}).get("panel_version", None),
+            mod_version = d.get("panel", {}).get("specification", {}).get("module_version", None),
+            resources   = EliteCloudDeviceResource.from_data(d.get("resources", {}))
         )
     
 
@@ -186,13 +192,14 @@ class EliteCloudDeviceConfig():
         Construct a new EliteCloudDeviceConfig object from a dict
         """
         return EliteCloudDeviceConfig(
-            uuid       = d.get("uuid", None),
-            name       = d.get("name", None),
-            serial     = d.get("serial", None),
-            mac        = d.get("mac", None),
-            type       = d.get("type", None),
-            version    = d.get("version", None),
-            resources  = EliteCloudDeviceResource.from_list(d.get("resources", {})),
+            uuid        = d.get("uuid", None),
+            name        = d.get("name", None),
+            serial      = d.get("serial", None),
+            mac         = d.get("mac", None),
+            type        = d.get("type", None),
+            pnl_version = d.get("pnl_version"),
+            mod_version = d.get("mod_version"),
+            resources   = EliteCloudDeviceResource.from_list(d.get("resources", {})),
         )
 
 

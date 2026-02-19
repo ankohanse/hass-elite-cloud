@@ -207,12 +207,10 @@ class EliteCloudEntity(RestoreEntity):
     
     def get_binary_sensor_device_class(self):
         """Return one of the BinarySensorDeviceClass.xyz or None"""
-        section = str.split(self._datapoint.key, '_')[0]
-
-        match section:
+        match self._datapoint.sec:
             case 'area':     return None                            # On/Off
             case 'output':   return None                            # On/Off
-            case 'tamper':   return BinarySensorDeviceClass.TAMPER  # Tamper/clear
+            case 'tamper':   return BinarySensorDeviceClass.PROBLEM # or TAMPER: Tamper/clear
             case 'system':   return BinarySensorDeviceClass.PROBLEM # problem/ok
             case 'keypad':   return BinarySensorDeviceClass.PROBLEM # problem/ok
 

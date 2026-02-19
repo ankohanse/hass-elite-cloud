@@ -250,7 +250,8 @@ class EliteCloudCoordinator(DataUpdateCoordinator[dict[str,EliteCloudDeviceStatu
                 manufacturer =  MANUFACTURER,
                 model = device.type,
                 serial_number = device.serial,
-                hw_version = device.version,
+                sw_version = device.pnl_version,
+                hw_version = device.mod_version,
             )
             valid_ids.append( (DOMAIN, device.uuid) )
 

@@ -19,9 +19,10 @@ from pyelitecloud import (
     EliteCloudApiFlag,
     EliteCloudCmdSection,
     EliteCloudCmdAction,
+    EliteCloudSite,
+    EliteCloudStatusType,
     EliteCloudConnectError,
     EliteCloudAuthError,
-    EliteCloudSite,
 ) 
 
 from .const import (
@@ -145,6 +146,7 @@ class EliteCloudApiWrap(AsyncEliteCloudApi):
 
         # For diagnostics
         self._diag_values = defaultdict(set)
+        self._warned_status_values = set()
 
 
     def set_initial_devices(self, device_configs: list[EliteCloudDeviceConfig]):
@@ -326,8 +328,27 @@ class EliteCloudApiWrap(AsyncEliteCloudApi):
             if self._async_data_listener is not None:
                 await self._async_data_listener()
 
+            # Extra check for not yet known system and tamper values
+            if section in ['status', 'tamper', 'system']:
+                await self._async_check_status_values('tamper', site_status)
+                await self._async_check_status_values('system', site_status)
+
         except Exception as e:
             _LOGGER.info(f"{e}")
+
+
+    async def _async_check_status_values(self, section: str, site_status: dict[str,Any]):
+        """
+        Extra check for not yet known system and tamper values
+        """
+        statuses = site_status.get(section, {}).get('status', [])
+        for status in statuses:
+            try:
+                e = EliteCloudStatusType(status)
+            except ValueError:
+                if status not in self._warned_status_values:
+                    self._warned_status_values.add(status)
+                    _LOGGER.warning(f"Detected a not yet known '{section}' status value '{status}'. Please contact the developer of this integration so handling for this status can be added.")
 
 
     async def _async_update_diagnostics(self, device_status:EliteCloudDeviceStatus=None):

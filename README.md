@@ -1,4 +1,4 @@
-[![version](https://img.shields.io/github/v/release/ankohanse/hass-smart-water?style=for-the-badge)](https://github.com/ankohanse/hass-elite-cloud)
+[![version](https://img.shields.io/github/v/release/ankohanse/hass-elite-cloud?style=for-the-badge)](https://github.com/ankohanse/hass-elite-cloud)
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
 [![maintained](https://img.shields.io/maintenance/yes/2026?style=for-the-badge)](https://github.com/ankohanse/hass-elite-cloud)
 [![usage](https://img.shields.io/badge/dynamic/json?style=for-the-badge&label=usage&suffix=%20installs&cacheSeconds=15600&url=https://analytics.home-assistant.io/custom_integrations.json&query=$.hass-elite-cloud.total)](https://github.com/ankohanse/hass-elite-cloud)<br/>
@@ -78,13 +78,13 @@ The following properties are required to connect to the Elite Cloud servers:
 ![setup_step_1](documentation/setup_step_user.png)
 
 ## Step 2 - Finish
-The integration will try to connect to the Smart Water servers to retrieven the user's profile.
-If this succeeds, it will create entities for the found gateways, tanks and pumps.
+The integration will try to connect to the Elite Cloud servers to retrieven the user's devices.
+If this succeeds, it will create entities for the found area's, sensors and controls.
 
 ![setup_step_2](documentation/setup_step_finish.png)
 
 ## Devices
-After succcessful setup, all devices from the Smart Water profile should show up in a list.
+After succcessful setup, all devices from the Elite Cloud account should show up in a list.
 
 ![controller_list](documentation/controller_list.png)
 

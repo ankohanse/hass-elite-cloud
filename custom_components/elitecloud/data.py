@@ -105,6 +105,10 @@ DATAPOINTS = [
 
     DP(key="mains",      sec="tamper", id=0,  name="Mains Power",    pf="bin", flag="e,diag",  rpath="=tamper", spath="'mains fail' in tamper.status",  fmt="s",  unit="",  opt={}),
     DP(key="battery",    sec="tamper", id=0,  name="Backup Battery", pf="bin", flag="e,diag",  rpath="=tamper", spath="'battery low' in tamper.status", fmt="s",  unit="",  opt={}),
+
+    # For detecting not yet known tamper and system statuses
+    DP(key="dev_tamper", sec="dev",    id=0,  name="Dev Tamper",     pf="",    flag="",        rpath="=dev",    spath="tamper.status",                  fmt="s",  unit="",  opt={}),
+    DP(key="dev_system", sec="dev",    id=0,  name="Dev System",     pf="",    flag="",        rpath="=dev",    spath="system.status",                  fmt="s",  unit="",  opt={}),
 ]
 
 DATAPATHS_EXTRA = {
@@ -115,6 +119,7 @@ DATAPATHS_CONST = {
     '=tamper':      { 'name': '', 'icon_name': '', 'is_hidden': False, 'is_active': True},
     '=system':      { 'name': '', 'icon_name': '', 'is_hidden': False, 'is_active': True},
     '=keypad':      { 'name': '', 'icon_name': '', 'is_hidden': False, 'is_active': True},
+    '=dev':         { 'name': '', 'icon_name': '', 'is_hidden': True,  'is_active': False},
 }
 
 class EliteCloudDatapoint(DP):

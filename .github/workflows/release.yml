@@ -16,11 +16,12 @@ jobs:
 
       - name: Create Zip
         run: |
-          zip -r elitecloud.zip ./custom_components/elitecloud/
+          cd "${{ github.workspace }}/custom_components/elitecloud"
+          zip -r elitecloud.zip ./
 
       - name: Upload Zip to Release
         uses: softprops/action-gh-release@v2.2.1
         with:
-          files: elitecloud.zip
+          files: ${{ github.workspace }}/custom_components/elitecloud/elitecloud.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

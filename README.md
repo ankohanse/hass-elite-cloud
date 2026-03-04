@@ -1,7 +1,7 @@
 [![version](https://img.shields.io/github/v/release/ankohanse/hass-elite-cloud?style=for-the-badge)](https://github.com/ankohanse/hass-elite-cloud)
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
 [![maintained](https://img.shields.io/maintenance/yes/2026?style=for-the-badge)](https://github.com/ankohanse/hass-elite-cloud)
-[![usage](https://img.shields.io/badge/dynamic/json?style=for-the-badge&label=usage&suffix=%20installs&cacheSeconds=15600&url=https://analytics.home-assistant.io/custom_integrations.json&query=$.hass-elite-cloud.total)](https://github.com/ankohanse/hass-elite-cloud)<br/>
+[![usage](https://img.shields.io/badge/dynamic/json?style=for-the-badge&label=usage&suffix=%20installs&cacheSeconds=15600&url=https://analytics.home-assistant.io/custom_integrations.json&query=$.elitecloud.total)](https://github.com/ankohanse/hass-elite-cloud)<br/>
 [![license](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](https://github.com/ankohanse/hass-elite-cloud/blob/main/LICENSE)
 [![buy_me_a_coffee](https://img.shields.io/badge/If%20you%20like%20it-Buy%20me%20a%20coffee-yellow.svg?style=for-the-badge)](https://www.buymeacoffee.com/ankohanse)
 
@@ -25,14 +25,12 @@ This library depends on the backend servers for the Elite Cloud app to retrieve 
 Before using this library, the Elite Cloud app must have been used to link the alarm device to the Arrowhead Elite Cloud services.
 
 ## HACS
-This custom integration is waiting to be included in HACS (Home Assistant Community Store) default integrations.
-Until that time, you can add it as a HACS custom repository:
-1. In the HACS page, press the three dots at the top right corner.
-2. Select 'Custom Repositories'
-3. Enter repository "https://github.com/ankohanse/hass-elite-cloud" (with the quotes seems to work better)
-4. Select category 'integration' and press 'Add'
-5. Restart Home Assistant.
-6. Follow the UI based [Configuration](#configuration)
+This custom integration is available via HACS (Home Assistant Community Store).
+1. In the HACS page, seach for 'elitecloud'.
+2. Click on the found item to display this readme (this page).
+3. At the bottom of the page press 'Download'
+4. Restart Home Assistant.
+5. Follow the UI based [Configuration](#configuration)
 
 ## Manual install
 1. Under the `<config directory>/custom_components/` directory create a directory called `elitecloud`. 

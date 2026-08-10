@@ -160,7 +160,9 @@ class EliteCloudApiWrap(AsyncEliteCloudApi):
                 panel_mac = device_config.mac,
                 panel_serial = device_config.serial
             )
-            self._sites.append(site)    # in super class AsyncEliteCloudApi
+            if self._sites.find_by_uuid(site.uuid) is None:  # in super class AsyncEliteCloudApi
+                self._sites.append(site)
+
             self.devices[device_config.uuid] = device_config
 
 

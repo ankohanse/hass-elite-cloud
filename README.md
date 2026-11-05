@@ -22,49 +22,13 @@ This library depends on the backend servers for the Elite Cloud app to retrieve 
 
 Before using this library, the Elite Cloud app must have been used to link the alarm device to the Arrowhead Elite Cloud services.
 
-## HACS
-This custom integration is available via HACS (Home Assistant Community Store).
-1. In the HACS page, seach for 'elitecloud'.
+# Installation
+
+This custom integration is available via Home Assistant Marketplace.
+1. Go to Settings → Marketplace and search for 'elitecloud'.
 2. Click on the found item to display this readme (this page).
-3. At the bottom of the page press 'Download'
-4. Restart Home Assistant.
-5. Follow the UI based [Configuration](#configuration)
-
-## Manual install
-1. Under the `<config directory>/custom_components/` directory create a directory called `elitecloud`. 
-Copying all files in `/custom_components/elitecloud/` folder from this repo into the new `<config directory>/custom_components/elitecloud/` directory you just created.
-
-    This is how your custom_components directory should look like:
-
-    ```bash
-    custom_components
-    ├── elitecloud
-    │   ├── translations
-    │   │   └── en.json
-    │   ├── __init__.py
-    │   ├── alarm_control_panel.py
-    │   ├── api.py
-    │   ├── binary_sensor.py
-    │   ├── config_flow.py
-    │   ├── const.py
-    │   ├── coordinator.py
-    │   ├── data.py
-    │   ├── diagnostics.py
-    │   ├── entity.py
-    │   ├── helper.py
-    │   ├── manifest.json
-    │   ├── strings.json
-    │   └── switch.py
-    ```
-
-2. Restart Home Assistant.
-3. Follow the UI based [Configuration](#configuration)
-
-To start the setup of this custom integration:
-- go to Home Assistant's Integration Dashboard
-- Add Integration
-- Search for 'Elite Cloud'
-- Follow the prompts in the configuration step
+3. At the top of the page press 'Install'
+5. Follow the displayed setup steps
 
 ## Step 1 - Connection details
 The following properties are required to connect to the Elite Cloud servers:
